@@ -1,38 +1,15 @@
-'use strict'
+import { getFilters } from './filters'
+import { getTodos, removeTodo, toggleTodo } from './todos'
 
-const getSavedTodos = function () {
+// renderTodos
+// Arguments: none
+// Return value: none
+const renderTodos = () => {
 
-    const todoJSON = localStorage.getItem('todos')
+    const todosElement = document.querySelector('#todos')
+    const filters = getFilters()
 
-    try {
-        return todoJSON ? JSON.parse(todoJSON) : []
-    } catch (e) {
-        return []
-    }
-}
-
-const saveTodos = function (todos) {
-    localStorage.setItem('todos', JSON.stringify(todos))
-}
-
-const removeTodo = (todoId) => {
-    const todoIndex = todos.findIndex((item) => todoId === item.id)
-
-    if (todoIndex > -1) {
-        todos.splice(todoIndex, 1)
-    }
-}
-
-const toggleTodo = (todoId) => {
-    const todo = todos.find((item) => item.id === todoId)
-
-    if (todo) {
-        todo.completed = !todo.completed
-    }
-}
-
-const renderTodos = (todos, filters) => {
-    const filteredTodos = todos.filter((todo) => {
+    const filteredTodos = getTodos().filter((todo) => {
 
         const searchMatch = todo.description.toLowerCase().includes(filters.searchText.toLowerCase())
 
@@ -44,7 +21,6 @@ const renderTodos = (todos, filters) => {
     })
 
     const incompleteTodos = filteredTodos.filter((item) => !item.completed)
-    const todosElement = document.querySelector('#todos')
 
     todosElement.innerHTML = ''
     todosElement.appendChild(generateSummaryDOM(incompleteTodos))
@@ -63,6 +39,7 @@ const renderTodos = (todos, filters) => {
 }
 
 const generateTodoDOM = (todo) => {
+
     const todoElement = document.createElement('label')
     const containerElement = document.createElement('div')
     const checkboxElement = document.createElement('input')
@@ -75,8 +52,7 @@ const generateTodoDOM = (todo) => {
 
     checkboxElement.addEventListener('click', (e) => {
         toggleTodo(todo.id)
-        saveTodos(todos)
-        renderTodos(todos, filters)
+        renderTodos()
     })
 
     if (todo.description.length > 0) {
@@ -97,8 +73,7 @@ const generateTodoDOM = (todo) => {
 
     removeButtonElement.addEventListener('click', () => {
         removeTodo(todo.id)
-        saveTodos(todos)
-        renderTodos(todos, filters)
+        renderTodos()
     })
 
     return todoElement
@@ -112,3 +87,5 @@ const generateSummaryDOM = (incompleteTodos) => {
     headerElement.textContent = incompleteTodos.length > 1 ? `${incompleteText} todos left` : `${incompleteText} todo left`
     return headerElement
 }
+
+export { renderTodos, generateTodoDOM, generateSummaryDOM }
