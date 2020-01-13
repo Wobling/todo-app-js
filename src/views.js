@@ -7,13 +7,13 @@ import { getTodos, removeTodo, toggleTodo } from './todos'
 const renderTodos = () => {
 
     const todosElement = document.querySelector('#todos')
-    const filters = getFilters()
+    const { searchText, hideCompleted } = getFilters()
 
     const filteredTodos = getTodos().filter((todo) => {
 
-        const searchMatch = todo.description.toLowerCase().includes(filters.searchText.toLowerCase())
+        const searchMatch = todo.description.toLowerCase().includes(searchText.toLowerCase())
 
-        if (filters.hideCompleted) {
+        if (hideCompleted) {
             return searchMatch && !todo.completed
         } 
 
