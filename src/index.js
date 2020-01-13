@@ -20,9 +20,10 @@ document.querySelector('#hide-completed').addEventListener('click', (e) => {
 
 document.querySelector('#todo-form').addEventListener('submit', (e) => {
     e.preventDefault()
+    const text = e.target.elements.todoDescription.value.trim()
     
     if (text.length > 0) {
-        createTodo(e.target.elements.todoDescription.value.trim())
+        createTodo(text)
         e.target.elements.todoDescription.value = ''
         renderTodos()
     }
